@@ -7,7 +7,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -20,45 +19,38 @@ var (
 	mgrMux  *http.ServeMux
 )
 
-func usage() {
-	fmt.Fprintf(os.Stderr, "Atlas API Service %s\n", lib.VERS)
-	flag.PrintDefaults()
-	os.Exit(1)
-}
-
 func main() {
+	lib.SvcName = "Atlas API Service"
+	lib.SvcVers = "0.2"
+
 	var (
-		apiAddr = flag.String("ap", ":80", "Specify public port")
+		apiAddr = flag.String("ap", lib.API_PORT, "Specify public port")
 		mgrAddr = flag.String("mp", lib.PORT, "Specify management port")
-		cfgFile = flag.String("f", "config.json", "Specify config file")
+		cfgFile = flag.String("f", lib.CONFIG, "Specify config file")
 		cfgBuf  []byte
 		err     error
 	)
-	flag.Usage = usage
+	flag.Usage = lib.Usage
 	flag.Parse()
 
 	if cfgBuf, err = os.ReadFile(*cfgFile); err != nil {
-		lib.LogError(os.Stderr, "main.main", err)
-		os.Exit(1)
+		lib.LogFatal(os.Stderr, "main.main", err, 1)
 	}
 	if nsTable, err = lib.ImportDict(cfgBuf); err != nil {
-		lib.LogError(os.Stderr, "main.main", err)
-		os.Exit(1)
+		lib.LogFatal(os.Stderr, "main.main", err, 1)
 	}
 
 	mgrMux = http.NewServeMux()
 	apiMux = http.NewServeMux()
 
 	mgrMux.HandleFunc("/ping", lib.ApiPing)
-	//mgrMux.HandleFunc("/list", apiList)
+	mgrMux.HandleFunc("/list", apiList)
 	//mgrMux.HandleFunc("/store", apiStore)
 	//mgrMux.HandleFunc("/remove", apiRemove)
-	//apiMux.HandleFunc("/", apiHandle)
+	apiMux.HandleFunc("/", apiHandle)
 
+	go http.ListenAndServe(*mgrAddr, mgrMux)
 	if err = http.ListenAndServe(*apiAddr, apiMux); err != nil {
-		lib.LogError(os.Stderr, "main.main", err)
-	}
-	if err = http.ListenAndServe(*mgrAddr, mgrMux); err != nil {
 		lib.LogError(os.Stderr, "main.main", err)
 	}
 }
