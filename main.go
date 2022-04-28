@@ -34,10 +34,10 @@ func main() {
 	flag.Parse()
 
 	if cfgBuf, err = os.ReadFile(*cfgFile); err != nil {
-		lib.LogFatal(os.Stderr, "main.main", err, 1)
+		lib.LogFatal(os.Stderr, "main.main", err)
 	}
 	if nsTable, err = lib.ImportDict(cfgBuf); err != nil {
-		lib.LogFatal(os.Stderr, "main.main", err, 1)
+		lib.LogFatal(os.Stderr, "main.main", err)
 	}
 
 	mgrMux = http.NewServeMux()
