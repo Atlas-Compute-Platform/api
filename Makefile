@@ -6,3 +6,5 @@ build:
 	@go build
 clean:
 	@go clean
+docker:build
+	@docker build
