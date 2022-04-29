@@ -1,4 +1,4 @@
-# Dockerfile: Atlas API Service
+# Atlas Dockerfile
 FROM alpine:latest
 RUN apk add go
 COPY ./api /usr/local/bin/api

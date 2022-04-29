@@ -9,6 +9,21 @@ import (
 	"github.com/Atlas-Compute-Platform/lib"
 )
 
+func apiBind(w http.ResponseWriter, r *http.Request) {
+	lib.SetCors(&w)
+	var (
+		key string = r.URL.Query().Get(lib.KEY_KEYS)
+		val string = r.URL.Query().Get(lib.KEY_VALS)
+	)
+	nsTable[key] = val
+}
+
+func apiUnbind(w http.ResponseWriter, r *http.Request) {
+	lib.SetCors(&w)
+	var key string = r.URL.Query().Get(lib.KEY_KEYS)
+	delete(nsTable, key)
+}
+
 func apiList(w http.ResponseWriter, r *http.Request) {
 	lib.SetCors(&w)
 	var err error

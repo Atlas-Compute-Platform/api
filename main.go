@@ -21,7 +21,7 @@ var (
 
 func main() {
 	lib.SvcName = "Atlas API Service"
-	lib.SvcVers = "0.2"
+	lib.SvcVers = "1.0"
 
 	var (
 		apiAddr = flag.String("ap", lib.API_PORT, "Specify public port")
@@ -45,8 +45,8 @@ func main() {
 
 	mgrMux.HandleFunc("/ping", lib.ApiPing)
 	mgrMux.HandleFunc("/list", apiList)
-	//mgrMux.HandleFunc("/store", apiStore)
-	//mgrMux.HandleFunc("/remove", apiRemove)
+	mgrMux.HandleFunc("/bind", apiBind)
+	mgrMux.HandleFunc("/unbind", apiUnbind)
 	apiMux.HandleFunc("/", apiHandle)
 
 	go http.ListenAndServe(*mgrAddr, mgrMux)
