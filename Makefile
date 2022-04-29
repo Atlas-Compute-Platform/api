@@ -1,5 +1,5 @@
 # Atlas Makefile
-imageName = atapi
+imageName = thedevtop/atapi:latest
 help:
 	@echo 'build: Build exectuable'
 	@echo 'clean: Remove exectuable'
